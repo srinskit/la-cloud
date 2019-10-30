@@ -85,17 +85,40 @@ class Login extends Component {
 
     login = ({username, password}) => {
         fetch(`${this.server.url}/auth/login/`, {
-            mode: this.server.mode,
+            mode: "cors",
             method: "POST",
-            body: {username, password}
-        }).then((res) => {
-            if (!res.ok)
-                throw Error(res.message);
-            this.snack("success", "Deleted!");
-        }).catch(err => {
+            body: JSON.stringify({username, password})
+        })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log(result)
+                }
+            )
+            .catch(err => {
             this.snack("error", err.message);
         });
     }
+
+    // login = ({username, password}) => {
+    //     const form = new FormData()
+    //     form.append('username', username)
+    //     form.append('password', password)
+    //     fetch(`${this.server.url}/auth/login/`, {
+    //         mode: "cors",
+    //         method: "POST",
+    //         headers: { 'Content-Type': 'multipart/form-data' },
+    //         body: form
+    //     }).then((res) => {
+    //         console.log(res.json())
+    //         if (!res.ok)
+    //             throw Error(res.message);
+    //         this.snack("success", "Deleted!");
+    //     }).catch(err => {
+    //         this.snack("error", err.message);
+    //     });
+    // }
+
 }
 
 Login.contextType = AppContext;
