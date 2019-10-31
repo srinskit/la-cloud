@@ -36,6 +36,18 @@ class Info extends Component {
                                 <TableCell align="left">{"SSH Port"}</TableCell>
                                 <TableCell align="right">{instance.ssh_port}</TableCell>
                             </TableRow>
+                            <TableRow>
+                                <TableCell align="left">{"CPU limit"}</TableCell>
+                                <TableCell align="right">{instance.cpu}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="left">{"RAM limit"}</TableCell>
+                                <TableCell align="right">{instance.RAM}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="left">{"Image"}</TableCell>
+                                <TableCell align="right">{instance.image.image_name}</TableCell>
+                            </TableRow>
                         </TableBody>
                     </Table>
                 </Paper>
