@@ -4,6 +4,10 @@ import AppContext from "../../AppContext";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Table from "@material-ui/core/Table";
 
 const styles = theme => ({
     paper: {
@@ -30,12 +34,22 @@ class Profile extends Component {
                     {
                         user ?
                             <div>
-                                <Typography variant={"h6"}>
-                                    {user.name}
-                                </Typography>
-                                <Typography>
-                                    Username: {user.username}
-                                </Typography>
+                                <Table className={classes.table} aria-label="simple table">
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell align="left">{"Name"}</TableCell>
+                                            <TableCell align="right">{user.name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="left">{"Username"}</TableCell>
+                                            <TableCell align="right">{user.username}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="left">{"Email"}</TableCell>
+                                            <TableCell align="right">{user.email}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
                             </div> : null
                     }
                 </Paper>
