@@ -25,7 +25,7 @@ class Access extends Component {
                     <Paper className={classes.paper}>
                         <Typography>
                             <code>
-                                ssh root@{instance.IP}:{instance.ssh_port}
+                                ssh root@{instance.IP} -p {instance.ssh_port}
                             </code>
                         </Typography>
                     </Paper>

@@ -55,7 +55,7 @@ class Dashboard extends Component {
                         {
                             icon: () => <CopyIcon/>,
                             tooltip: 'Copy SSH info',
-                            onClick: (_, {IP, ssh_port}) => this.saveToClipboard(`${IP}:${ssh_port}`)
+                            onClick: (_, {IP, ssh_port}) => this.saveToClipboard(`ssh root@${IP} -p ${ssh_port}`)
                         },
                         {
                             icon: () => <ManageIcon/>,
@@ -109,7 +109,7 @@ class Dashboard extends Component {
         this.context.snack("success", "Copied");
     }
 
-    termInstance(id){
+    termInstance(id) {
         fetch(`${this.context.server.url}/stop_instance/${id}`, {
             mode: this.context.server.mode,
             method: "GET",
