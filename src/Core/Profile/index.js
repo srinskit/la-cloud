@@ -29,10 +29,12 @@ class Profile extends Component {
         return (
             <div>
                 <Paper className={classes.paper}>
-                    <Typography variant={"h5"} gutterBottom>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <Typography variant={"h4"} gutterBottom>
+                            Profile
+                        </Typography>
                         <ProfileIcon fontSize={"large"}/>
-                        Profile
-                    </Typography>
+                    </div>
                     {
                         user ?
                             <div>
