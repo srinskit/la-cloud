@@ -19,6 +19,7 @@ import Container from "@material-ui/core/Container";
 import Dashboard from "./Dashboard";
 import CreateInstance from "./CreateInstance";
 import Instance from "./Instance";
+import Profile from "./Profile";
 import SimpleError from "../SimpleError";
 
 const drawerWidth = 240;
@@ -115,6 +116,7 @@ class Core extends Component {
                             <Route exact path={"/"} component={Dashboard}/>
                             <Route path={"/new"} component={CreateInstance}/>
                             <Route path={"/instance/:id"} component={Instance}/>
+                            <Route path={"/profile"} component={Profile}/>
                             <Route path={"/"} component={NotFound}/>
                         </Switch>
                     </Container>

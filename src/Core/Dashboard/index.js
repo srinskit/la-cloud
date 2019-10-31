@@ -4,6 +4,8 @@ import AppContext from "../../AppContext";
 import MaterialTable from "material-table";
 import ManageIcon from "@material-ui/icons/OpenInNew";
 import CopyIcon from "@material-ui/icons/FileCopy";
+import ShutIcon from '@material-ui/icons/PowerSettingsNew';
+
 
 const styles = theme => ({});
 
@@ -44,6 +46,11 @@ class Dashboard extends Component {
                             tooltip: 'Create instance',
                             isFreeAction: true,
                             onClick: () => this.props.history.push("/new")
+                        },
+                        {
+                            icon: () => <ShutIcon/>,
+                            tooltip: 'Terminate Instance',
+                            onClick: (_, {id}) => this.termInstance(id)
                         },
                         {
                             icon: () => <CopyIcon/>,
@@ -100,6 +107,27 @@ class Dashboard extends Component {
     saveToClipboard(content) {
         navigator.clipboard.writeText(content);
         this.context.snack("success", "Copied");
+    }
+
+    termInstance(id){
+        fetch(`${this.context.server.url}/stop_instance/${id}`, {
+            mode: this.context.server.mode,
+            method: "GET",
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+                this.context.snack("success", "Terminated!");
+                this.getInstances();
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
     }
 }
 

@@ -158,6 +158,7 @@ class CreateInstance extends Component {
                 })
             })
             .then((result) => {
+                this.props.history.push(`/instance/${result.instance_id}`);
             })
             .catch(err => {
                 this.context.snack("error", err.message);
