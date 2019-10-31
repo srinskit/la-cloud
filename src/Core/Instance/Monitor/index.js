@@ -118,10 +118,10 @@ class Monitor extends Component {
                 this.setState(prevState => {
                     let old_cpu_data = prevState.cpu_data;
                     let cpu_data = old_cpu_data.slice(Number(old_cpu_data.length >= 16));
-                    cpu_data.push(Number(result.cpu));
+                    cpu_data.push(Math.min(Number(result.cpu), 100));
                     let old_mem_data = prevState.mem_data;
                     let mem_data = old_mem_data.slice(Number(old_mem_data.length >= 16));
-                    mem_data.push(Number(result.memory));
+                    mem_data.push(Math.min(Number(result.memory), 100));
                     return {...prevState, cpu_data, mem_data};
                 });
             })

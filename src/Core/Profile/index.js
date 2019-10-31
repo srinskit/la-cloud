@@ -8,6 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
+import ProfileIcon from "@material-ui/icons/AccountBox";
 
 const styles = theme => ({
     paper: {
@@ -28,7 +29,8 @@ class Profile extends Component {
         return (
             <div>
                 <Paper className={classes.paper}>
-                    <Typography variant={"h3"} gutterBottom>
+                    <Typography variant={"h5"} gutterBottom>
+                        <ProfileIcon fontSize={"large"}/>
                         Profile
                     </Typography>
                     {
