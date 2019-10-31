@@ -59,6 +59,7 @@ class Instance extends Component {
                 })
             })
             .then((result) => {
+                console.log(result.instance);
                 this.setState({instance: result.instance});
             })
             .catch(err => {
