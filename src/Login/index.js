@@ -16,9 +16,7 @@ const styles = theme => ({
 
 class Login extends Component {
     constructor(props, context) {
-        super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        super(props, context); this.context = context;
         this.state = {
             formValues: {
                 username: "",
@@ -46,6 +44,7 @@ class Login extends Component {
                                 type={"username"}
                                 label={"Username"}
                                 value={formValues.name}
+                                autoFocus
                                 onChange={this.handleChange}
                             />
                         </Grid>
@@ -84,17 +83,25 @@ class Login extends Component {
     };
 
     login = ({username, password}) => {
-        fetch(`${this.server.url}/auth/login/`, {
-            mode: this.server.mode,
+        fetch(`${this.context.server.url}/auth/login/`, {
+            mode: this.context.server.mode,
             method: "POST",
-            body: {username, password}
-        }).then((res) => {
-            if (!res.ok)
-                throw Error(res.message);
-            this.snack("success", "Deleted!");
-        }).catch(err => {
-            this.snack("error", err.message);
-        });
+            body: JSON.stringify({username, password})
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+                localStorage.setItem('username', username);
+                window.location.reload();
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
     }
 }
 

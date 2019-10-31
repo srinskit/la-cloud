@@ -3,20 +3,24 @@ import {withStyles} from "@material-ui/core";
 import {MuiThemeProvider, createMuiTheme} from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Container from "@material-ui/core/Container";
 
 import AppContext from "./AppContext";
-import SimpleError from "./SimpleError";
 import Snack from "./Snack";
 import Core from "./Core";
 import Login from "./Login";
 import Logout from "./Logout";
 import Signup from "./Signup";
+import {blue} from "@material-ui/core/colors";
 
 const MuiTheme = {
     "dark": createMuiTheme({
         palette: {
             type: "dark",
+            primary: blue,
+            background: {
+                default: "#222",
+                paper: "#333",
+            },
         },
         typography: {
             useNextVariants: true,
@@ -33,11 +37,9 @@ const styles = theme => ({
     }
 });
 
-// const prod_domain = ".tronixnitk.in";
 const API_SERVER = {
     url: `http://localhost:8000/api`,
-    // mode: (window.location.hostname.slice(-prod_domain.length) === prod_domain) ? undefined : "cors",
-    mode: undefined,
+    mode: "cors",
 };
 
 class App extends Component {
@@ -46,12 +48,13 @@ class App extends Component {
         this.server = API_SERVER;
         this.state = {
             snacks: {},
-            user: null,
+            username: null,
         };
     }
 
     render() {
         const {classes} = this.props;
+        const {username} = this.state;
         return (
             <MuiThemeProvider theme={MuiTheme["dark"]}>
                 <React.Fragment>
@@ -60,17 +63,16 @@ class App extends Component {
                         {
                             snack: this.snack.bind(this),
                             server: API_SERVER,
+                            username: username,
                         }
                     }>
                         <Snack messages={this.state.snacks} onClose={this.handleCloseSnack.bind(this)}/>
                         <Router>
                             <div className={classes.app}>
                                 <Switch>
-                                    <Route path="/login" component={Login}/>
                                     <Route path="/logout" component={Logout}/>
                                     <Route path="/signup" component={Signup}/>
-                                    <Route path="/" component={Core}/>
-                                    <Route path="/" component={NotFound}/>
+                                    <Route path="/" component={username ? Core : Login}/>
                                 </Switch>
                             </div>
                         </Router>
@@ -81,6 +83,8 @@ class App extends Component {
     }
 
     componentDidMount() {
+        let username = localStorage.getItem('username');
+        this.setState({username});
     }
 
 
@@ -91,14 +95,6 @@ class App extends Component {
     snack(type, msg) {
         this.setState(prevState => ({...prevState, snacks: {...prevState.snacks, [type]: msg}}));
     }
-}
-
-function NotFound() {
-    return (
-        <Container maxWidth="md">
-            <SimpleError message="Page not found!"/>
-        </Container>
-    );
 }
 
 export default withStyles(styles, {withTheme: true})(App);

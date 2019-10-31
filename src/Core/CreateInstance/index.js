@@ -20,24 +20,18 @@ const styles = theme => ({
 class CreateInstance extends Component {
     constructor(props, context) {
         super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        this.context = context;
         this.state = {
-            images: [
-                {id: 0, name: "Ubuntu 18.04", description: "This is Ubuntu 18.04"},
-                {id: 1, name: "Ubuntu 19.04", description: "This is Ubuntu 19.04"},
-            ],
-            cpus: [
-                1, 2, 3, 4, 5, 6, 7, 8
-            ],
-            memories: [1, 2, 3, 4],
+            images: [],
+            cpus: [1, 2, 3, 4,],
+            memories: [256, 512, 1024, 2048, 4096,],
             formValues: {
                 name: "",
                 image: "",
-                cpu: "",
-                memory: "",
+                cpu: 1,
+                memory: 256,
             },
-        }
+        };
     }
 
     render() {
@@ -48,6 +42,7 @@ class CreateInstance extends Component {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
+                            autoFocus
                             name={"name"}
                             type={"text"}
                             label={"Instance name"}
@@ -71,7 +66,7 @@ class CreateInstance extends Component {
                                         <MenuItem value={image.id} key={i}>
                                             <div>
                                                 <Typography variant={"h6"}>
-                                                    {image.name}
+                                                    {image.image_name} - {image.actual_name}
                                                 </Typography>
                                                 <Typography variant={"body2"}>
                                                     {image.description}
@@ -106,7 +101,7 @@ class CreateInstance extends Component {
                     </Grid>
                     <Grid item xs={6} sm={3}>
                         <FormControl fullWidth>
-                            <InputLabel htmlFor="memory-simple">Memory</InputLabel>
+                            <InputLabel htmlFor="memory-simple">Memory in MB</InputLabel>
                             <Select
                                 value={formValues.memory}
                                 onChange={this.handleChange}
@@ -138,6 +133,7 @@ class CreateInstance extends Component {
     }
 
     componentDidMount() {
+        this.getImages();
     }
 
     handleChange = event => {
@@ -148,8 +144,44 @@ class CreateInstance extends Component {
         }));
     };
 
-    createInstance(val) {
-        console.log(val);
+    createInstance = (instance) => {
+        fetch(`${this.context.server.url}/start_instance/`, {
+            mode: this.context.server.mode,
+            method: "POST",
+            body: JSON.stringify({...instance, username: this.context.username})
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
+    };
+
+    getImages() {
+        fetch(`${this.context.server.url}/list_images/`, {
+            mode: this.context.server.mode,
+            method: "GET",
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+                this.setState({images: result.images});
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
     }
 }
 

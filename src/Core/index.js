@@ -56,8 +56,6 @@ const styles = theme => ({
 class Core extends Component {
     constructor(props, context) {
         super(props);
-        this.server = context.server;
-        this.snack = context.snack;
         this.state = {
             showDrawer: false,
             showEventOptions: false,
@@ -70,7 +68,7 @@ class Core extends Component {
         const {showDrawer} = this.state;
         return (
             <div className={classes.root}>
-                <AppBar position="fixed" className={classes.appBar}>
+                <AppBar position="fixed" className={classes.appBar} color={"inherit"}>
                     <Toolbar>
                         <Hidden smUp>
                             <IconButton
@@ -116,7 +114,7 @@ class Core extends Component {
                         <Switch>
                             <Route exact path={"/"} component={Dashboard}/>
                             <Route path={"/new"} component={CreateInstance}/>
-                            <Route path={"/instance"} component={Instance}/>
+                            <Route path={"/instance/:id"} component={Instance}/>
                             <Route path={"/"} component={NotFound}/>
                         </Switch>
                     </Container>
@@ -160,6 +158,9 @@ class Core extends Component {
                     Account
                 </ListSubheader>
                 <List onClick={() => this.ctrlDrawer(false)}>
+                    <ListItemLink to={"/profile"}>
+                        <ListItemText primary="Profile"/>
+                    </ListItemLink>
                     <ListItemLink to={"/logout"}>
                         <ListItemText primary="Logout"/>
                     </ListItemLink>

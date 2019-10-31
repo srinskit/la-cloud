@@ -14,10 +14,9 @@ const styles = theme => ({});
 class Instance extends Component {
     constructor(props, context) {
         super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        this.context = context;
         this.state = {
-            tabValue: 1,
+            tabValue: 0,
             instance: null,
         }
     }
@@ -27,7 +26,7 @@ class Instance extends Component {
         const {tabValue, instance} = this.state;
         return (
             <div className={classes.root}>
-                <AppBar position="static">
+                <AppBar position="static" color={"inherit"}>
                     <Tabs value={tabValue} onChange={this.handleTabChange.bind(this)}>
                         <Tab label="Info"/>
                         <Tab label="Monitor"/>
@@ -48,11 +47,23 @@ class Instance extends Component {
     }
 
     getInstance() {
-        this.setState({instance: null});
-        let instance = {
-            name: "instance-one", status: "running",
-        };
-        setTimeout(() => this.setState({instance}), 500);
+        fetch(`${this.context.server.url}/instance/${this.props.match.params["id"]}`, {
+            mode: this.context.server.mode,
+            method: "GET",
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+                this.setState({instance: result.instance});
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
     }
 }
 

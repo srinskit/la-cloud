@@ -16,9 +16,7 @@ const styles = theme => ({
 
 class Logout extends Component {
     constructor(props, context) {
-        super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        super(props, context); this.context = context;
     }
 
     render() {
@@ -37,17 +35,10 @@ class Logout extends Component {
     }
 
     componentDidMount() {
-        fetch(`${this.server.url}/core/auth/logout`, {
-            mode: this.server.mode,
-            credentials: 'include',
-            method: "GET",
-        }).then((res) => {
-            if (!res.ok)
-                throw Error(res.statusText);
-            this.props.history.push("/");
-        }).catch(err => {
-            this.snack("error", err.message);
-        });
+        setTimeout(() => {
+            localStorage.removeItem("username");
+            window.location.href = "/";
+        }, 1000);
     }
 }
 

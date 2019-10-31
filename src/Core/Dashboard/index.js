@@ -3,14 +3,15 @@ import {withStyles} from "@material-ui/core";
 import AppContext from "../../AppContext";
 import MaterialTable from "material-table";
 import ManageIcon from "@material-ui/icons/OpenInNew";
+import CopyIcon from "@material-ui/icons/FileCopy";
 
 const styles = theme => ({});
 
 class Dashboard extends Component {
     constructor(props, context) {
         super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        this.context = context;
+        this.context = context;
         this.state = {
             instances: null,
         }
@@ -23,7 +24,12 @@ class Dashboard extends Component {
                 <MaterialTable
                     columns={[
                         {title: 'Name', field: 'name',},
-                        {title: 'Status', field: 'status',},
+                        {
+                            title: 'Status', field: 'status',
+                            lookup: {CR: "created", RU: "running", SP: "stopped"},
+                        },
+                        {title: 'IP', field: 'IP',},
+                        {title: 'SSH Port', field: 'ssh_port',},
                     ]}
                     isLoading={instances == null}
                     actions={[
@@ -34,10 +40,21 @@ class Dashboard extends Component {
                             onClick: () => this.getInstances()
                         },
                         {
+                            icon: 'add',
+                            tooltip: 'Create instance',
+                            isFreeAction: true,
+                            onClick: () => this.props.history.push("/new")
+                        },
+                        {
+                            icon: () => <CopyIcon/>,
+                            tooltip: 'Copy SSH info',
+                            onClick: (_, {IP, ssh_port}) => this.saveToClipboard(`${IP}:${ssh_port}`)
+                        },
+                        {
                             icon: () => <ManageIcon/>,
                             tooltip: 'Manage',
-                            onClick: (_, {name}) => this.props.history.push(`instance/${name}`)
-                        }
+                            onClick: (_, {id}) => this.props.history.push(`instance/${id}`)
+                        },
                     ]}
                     options={{
                         showFirstLastPageButtons: false,
@@ -61,16 +78,28 @@ class Dashboard extends Component {
 
     getInstances() {
         this.setState({instances: null});
-        let instances = [
-            {
-                name: "instance-one", status: "running",
-            },
-            {
-                name: "instance-two", status: "running",
-            },
-            {name: "instance-three", status: "running",}
-        ];
-        setTimeout(() => this.setState({instances}), 2000);
+        fetch(`${this.context.server.url}/list_instances/${this.context.username}`, {
+            mode: this.context.server.mode,
+            method: "GET",
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
+            })
+            .then((result) => {
+                this.setState({instances: result.instances});
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
+    }
+
+    saveToClipboard(content) {
+        navigator.clipboard.writeText(content);
+        this.context.snack("success", "Copied");
     }
 }
 

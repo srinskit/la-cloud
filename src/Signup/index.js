@@ -16,9 +16,7 @@ const styles = theme => ({
 
 class Signup extends Component {
     constructor(props, context) {
-        super(props, context);
-        this.server = context.server;
-        this.snack = context.snack;
+        super(props, context); this.context = context;
         this.state = {
             formValues: {
                 name: "",
@@ -43,6 +41,7 @@ class Signup extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                autoFocus
                                 fullWidth
                                 name={"email"}
                                 type={"email"}
@@ -83,7 +82,7 @@ class Signup extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <Button fullWidth variant={"contained"} color={"primary"}
-                                    onClick={() => this.Signup(formValues)}
+                                    onClick={() => this.signup(formValues)}
                             >
                                 Signup
                             </Button>
@@ -105,27 +104,26 @@ class Signup extends Component {
         }));
     };
 
-    Signup = (formValues) => {
-        console.log(formValues);
-        fetch(`${this.server.url}/auth/signup/`, {
-            mode: "cors",
+    signup = (formValues) => {
+        fetch(`${this.context.server.url}/auth/signup/`, {
+            mode: this.context.server.mode,
             method: "POST",
-            body: {"user_details": formValues},
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json',
-            }
-        }).then(res => {
-            if (res.ok)
-                return res.json();
-            return res.json().then(({message}) => {
-                throw Error(message);
+            body: JSON.stringify({...formValues}),
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                return res.json().then(({message}) => {
+                    throw Error(message)
+                })
             })
-        }).then((val) => {
-            this.snack("success", val.message);
-        }).catch(err => {
-            this.snack("error", err.message);
-        });
+            .then((result) => {
+                this.context.snack("success", result.message);
+                window.location.href = "/";
+            })
+            .catch(err => {
+                this.context.snack("error", err.message);
+            });
     }
 }
 
