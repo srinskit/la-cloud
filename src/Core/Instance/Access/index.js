@@ -21,9 +21,15 @@ class Access extends Component {
                     <Typography variant={"h6"} gutterBottom>
                         SSH to {instance.name}
                     </Typography>
-                    <Typography paragraph>
-                        ssh root@{instance.IP}:{instance.ssh_port}
-                    </Typography>
+                    <pre>
+                    <Paper className={classes.paper}>
+                        <Typography>
+                            <code>
+                                ssh root@{instance.IP}:{instance.ssh_port}
+                            </code>
+                        </Typography>
+                    </Paper>
+                    </pre>
                     <Typography variant={"caption"}>
                         Note default password is "password".
                     </Typography>
