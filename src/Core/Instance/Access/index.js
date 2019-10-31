@@ -21,6 +21,9 @@ class Access extends Component {
                     <Typography variant={"h6"} gutterBottom>
                         SSH to {instance.name}
                     </Typography>
+                    <Typography variant={"body1"}>
+                        Use the following command to SSH into the instance:
+                    </Typography>
                     <pre>
                     <Paper className={classes.paper}>
                         <Typography>
@@ -31,7 +34,8 @@ class Access extends Component {
                     </Paper>
                     </pre>
                     <Typography variant={"caption"}>
-                        Note default password is "password".
+                        Note default username is "root" and default password is "password". It is recommended to change
+                        these credentials on first login.
                     </Typography>
                 </Paper>
             </div>
