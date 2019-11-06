@@ -11,12 +11,14 @@ import Container from "@material-ui/core/Container";
 const styles = theme => ({
     root: {
         padding: theme.spacing(2),
+        margin: theme.spacing(4, 0),
     },
 });
 
 class Login extends Component {
     constructor(props, context) {
-        super(props, context); this.context = context;
+        super(props, context);
+        this.context = context;
         this.state = {
             formValues: {
                 username: "",

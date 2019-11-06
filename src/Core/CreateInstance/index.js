@@ -31,12 +31,13 @@ class CreateInstance extends Component {
                 cpu: 1,
                 memory: 256,
             },
+            processing: false,
         };
     }
 
     render() {
         const {classes} = this.props;
-        const {formValues, images, cpus, memories} = this.state;
+        const {formValues, images, cpus, memories, processing} = this.state;
         return (
             <Paper className={classes.root}>
                 <Grid container spacing={2}>
@@ -122,6 +123,7 @@ class CreateInstance extends Component {
                     </Grid>
                     <Grid item xs={12} dir={"rtl"}>
                         <Button variant={"contained"} color={"primary"}
+                                disabled={processing}
                                 onClick={() => this.createInstance(formValues)}
                         >
                             Create
@@ -145,12 +147,15 @@ class CreateInstance extends Component {
     };
 
     createInstance = (instance) => {
+        this.setState({processing: true});
+        this.context.snack("info", "Creating instance...");
         fetch(`${this.context.server.url}/start_instance/`, {
             mode: this.context.server.mode,
             method: "POST",
             body: JSON.stringify({...instance, username: this.context.username})
         })
             .then(res => {
+                this.setState({processing: false});
                 if (res.ok)
                     return res.json();
                 return res.json().then(({message}) => {
@@ -158,6 +163,7 @@ class CreateInstance extends Component {
                 })
             })
             .then((result) => {
+                this.context.snack("success", "Created!");
                 this.props.history.push(`/instance/${result.instance_id}`);
             })
             .catch(err => {
